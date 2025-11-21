@@ -2,11 +2,14 @@ package dev.siri;
 
 import com.google.gson.Gson;
 import dev.siri.models.AppInfo;
+import dev.siri.models.ErrorResponse;
+import dev.siri.models.errors.UploadThingApiError;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.Response;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
 public class UploadThing {
@@ -23,7 +26,7 @@ public class UploadThing {
         this.apiKey = apiKey;
     }
 
-    public CompletableFuture<AppInfo> getAppInfo() {
+    public CompletableFuture<AppInfo> getAppInfo() throws UploadThingApiError {
         final String requestUrl = String.format("%s/v7/getAppInfo", UPLOADTHING_API_URL);
 
         return httpClient.prepare("POST", requestUrl)
@@ -31,7 +34,14 @@ public class UploadThing {
                 .execute()
                 .toCompletableFuture()
                 .thenApply(response -> {
-                    String body = response.getResponseBody();
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
                     return gson.fromJson(body, AppInfo.class);
                 });
     }

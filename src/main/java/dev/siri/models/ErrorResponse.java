@@ -10,7 +10,6 @@ public class ErrorResponse {
      * <p><b>Example</b></p>
      * <pre>Invalid request input</pre>
      */
-    @NotNull
     private String error;
     /**
      * Additional data related to the error
@@ -27,8 +26,9 @@ public class ErrorResponse {
      * }
      * </pre>
      */
-    @Nullable
     private ErrorData data;
+
+    public ErrorResponse() {}
 
     public ErrorResponse(@NotNull String error, @Nullable ErrorData data) {
         this.error = error;
@@ -36,11 +36,13 @@ public class ErrorResponse {
     }
 
 
-    public @NotNull  String getError() {
+    @NotNull
+    public String getError() {
         return error;
     }
 
-    public @Nullable ErrorData getData() {
+    @Nullable
+    public ErrorData getData() {
         return data;
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dev.siri.dto.FileAccessRequestBody;
 import dev.siri.models.AppInfo;
 import dev.siri.models.ErrorResponse;
+import dev.siri.models.RequestedFileAccessResponse;
 import dev.siri.models.errors.UploadThingApiError;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
@@ -27,7 +28,7 @@ public class UploadThing {
         this.apiKey = apiKey;
     }
 
-    public CompletableFuture<AppInfo> requestFileAccess(FileAccessRequestBody fileAccessBody) throws UploadThingApiError {
+    public CompletableFuture<RequestedFileAccessResponse> requestFileAccess(FileAccessRequestBody fileAccessBody) throws UploadThingApiError {
         final String requestUrl = String.format("%s/v6/requestFileAccess", UPLOADTHING_API_URL);
 
         return httpClient.prepare("POST", requestUrl)
@@ -44,7 +45,7 @@ public class UploadThing {
                         throw new UploadThingApiError(error);
                     }
 
-                    return gson.fromJson(body, AppInfo.class);
+                    return gson.fromJson(body, RequestedFileAccessResponse.class);
                 });
     }
 

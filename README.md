@@ -1,4 +1,6 @@
-<img src="images/logo.png" height="200" width="220" align="center" />
+<p align="center">
+    <img src="images/logo.png" height="200" width="220" />
+</p>
 
 <h1 align="center">uploadthing4j</h1>
 <h3 align="center">An unofficial Java SDK to interact with the <a href="https://uploadthing.com">UploadThing</a> API.</h3>

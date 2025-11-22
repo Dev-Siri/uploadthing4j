@@ -22,7 +22,7 @@ public class UploadThing {
     private static final Gson gson = new Gson();
 
     @NotNull
-    private String apiKey;
+    final private String apiKey;
 
     public UploadThing(@NotNull String apiKey) {
         this.apiKey = apiKey;

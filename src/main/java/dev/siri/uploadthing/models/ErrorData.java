@@ -1,13 +1,15 @@
-package dev.siri.models;
+package dev.siri.uploadthing.models;
+
+import java.util.List;
 
 public class ErrorData {
     private String code;
     private String expected;
     private String received;
-    private String[] path;
+    private List<String> path;
     private String message;
 
-    public ErrorData(String code, String expected, String received, String[] path, String message) {
+    public ErrorData(String code, String expected, String received, List<String> path, String message) {
         this.code = code;
         this.expected = expected;
         this.received = received;
@@ -27,7 +29,7 @@ public class ErrorData {
         return received;
     }
 
-    public String[] getPath() {
+    public List<String> getPath() {
         return path;
     }
 

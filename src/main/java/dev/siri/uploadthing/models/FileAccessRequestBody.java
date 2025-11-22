@@ -1,4 +1,4 @@
-package dev.siri.dto;
+package dev.siri.uploadthing.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -7,6 +7,8 @@ public class FileAccessRequestBody {
     private String fileKey;
     private String customId;
     private Integer expiresIn;
+
+    public FileAccessRequestBody() {}
 
     public FileAccessRequestBody(@NotNull String fileKey, @Nullable String customId, @NotNull Integer expiresIn) {
         this.fileKey = fileKey;

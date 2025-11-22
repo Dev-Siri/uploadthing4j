@@ -1,4 +1,4 @@
-package dev.siri.models;
+package dev.siri.uploadthing.models;
 
 public class PreparedUploadInfo {
     private String key;

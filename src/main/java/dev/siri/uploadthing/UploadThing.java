@@ -1,17 +1,12 @@
-package dev.siri;
+package dev.siri.uploadthing;
 
 import com.google.gson.Gson;
-import dev.siri.dto.FileAccessRequestBody;
-import dev.siri.models.AppInfo;
-import dev.siri.models.ErrorResponse;
-import dev.siri.models.RequestedFileAccessResponse;
-import dev.siri.models.errors.UploadThingApiError;
+import dev.siri.uploadthing.models.*;
+import dev.siri.uploadthing.models.errors.UploadThingApiError;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
-import org.asynchttpclient.Response;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
 public class UploadThing {
@@ -26,6 +21,47 @@ public class UploadThing {
 
     public UploadThing(@NotNull String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public CompletableFuture<UploadThingServerCallbackStatus> getServerCallbackStatus(String authorization) throws UploadThingApiError {
+        final String requestUrl = String.format("%s/v6/serverCallback", UPLOADTHING_API_URL);
+
+        return httpClient.prepare("GET", requestUrl)
+                .setHeader(UPLOADTHING_API_HEADER_KEY, apiKey)
+                .setHeader("Authorization", authorization)
+                .execute()
+                .toCompletableFuture()
+                .thenApply(response -> {
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
+                    return gson.fromJson(body, UploadThingServerCallbackStatus.class);
+                });
+    }
+
+    public CompletableFuture<UploadThingFileUploadStatusPoll> getUploadStatus(@NotNull String fileKey) throws UploadThingApiError {
+        final String requestUrl = String.format("%s/v6/pollUpload/%s", UPLOADTHING_API_URL, fileKey);
+
+        return httpClient.prepare("GET", requestUrl)
+                .setHeader(UPLOADTHING_API_HEADER_KEY, apiKey)
+                .execute()
+                .toCompletableFuture()
+                .thenApply(response -> {
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
+                    return gson.fromJson(body, UploadThingFileUploadStatusPoll.class);
+                });
     }
 
     public CompletableFuture<RequestedFileAccessResponse> requestFileAccess(FileAccessRequestBody fileAccessBody) throws UploadThingApiError {

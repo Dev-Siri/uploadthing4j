@@ -1,7 +1,9 @@
-package dev.siri.models;
+package dev.siri.uploadthing.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ErrorResponse {
     /**
@@ -26,11 +28,11 @@ public class ErrorResponse {
      * }
      * </pre>
      */
-    private ErrorData data;
+    private List<ErrorData> data;
 
     public ErrorResponse() {}
 
-    public ErrorResponse(@NotNull String error, @Nullable ErrorData data) {
+    public ErrorResponse(@NotNull String error, @Nullable List<ErrorData> data) {
         this.error = error;
         this.data = data;
     }
@@ -42,7 +44,7 @@ public class ErrorResponse {
     }
 
     @Nullable
-    public ErrorData getData() {
+    public List<ErrorData> getData() {
         return data;
     }
 }

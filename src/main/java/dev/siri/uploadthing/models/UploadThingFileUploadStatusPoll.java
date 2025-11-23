@@ -5,11 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class UploadThingFileUploadStatusPoll {
     private UploadThingFileUploadStatusPollStatus status;
-    private UploadThingFile file;
+    private UploadThingStatusPollFile file;
 
     public UploadThingFileUploadStatusPoll() {}
 
-    public UploadThingFileUploadStatusPoll(@NotNull String status, @Nullable UploadThingFile file) {
+    public UploadThingFileUploadStatusPoll(@NotNull String status, @Nullable UploadThingStatusPollFile file) {
         UploadThingFileUploadStatusPollStatus pollStatus;
 
         if (status.equals("done")) {
@@ -30,7 +30,7 @@ public class UploadThingFileUploadStatusPoll {
     }
 
     @Nullable
-    public UploadThingFile getFile() {
+    public UploadThingStatusPollFile getFile() {
         return file;
     }
 }

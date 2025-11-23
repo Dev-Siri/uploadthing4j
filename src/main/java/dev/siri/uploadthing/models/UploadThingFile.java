@@ -1,69 +1,46 @@
 package dev.siri.uploadthing.models;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class UploadThingFile {
-    private String fileKey;
-    private String fileName;
-    private Integer fileSize;
-    private String callbackUrl;
-    private String callbackSlug;
-    private String fileType;
-    private String fileUrl;
+    private String id;
+    private String key;
+    private String name;
     private String customId;
+    private String status;
 
     public UploadThingFile() {}
 
-    public UploadThingFile(@NotNull String fileKey, @NotNull String fileName, @NotNull Integer fileSize,  @NotNull String callbackUrl,
-                           @NotNull String callbackSlug, @Nullable String fileType, @Nullable String fileUrl, @Nullable String customId) {
-        this.fileKey = fileKey;
-        this.fileName = fileName;
-        this.fileSize =  fileSize;
-        this.callbackUrl = callbackUrl;
-        this.callbackSlug = callbackSlug;
-        this.fileType = fileType;
-        this.fileUrl = fileUrl;
+    public UploadThingFile(@NotNull String id, @NotNull String key, @NotNull String name, @NotNull String customId, @NotNull String status) {
+        this.id = id;
+        this.key = key;
+        this.name = name;
         this.customId = customId;
+        this.status = status;
     }
 
     @NotNull
-    public String getFileKey() {
-        return fileKey;
-    }
-
-    @Nullable
-    public String getFileType() {
-        return fileType;
-    }
-
-    @NotNull
-    public String getFileName() {
-        return fileName;
-    }
-
-    @Nullable
     public String getCustomId() {
         return customId;
     }
 
     @NotNull
-    public Integer getFileSize() {
-        return fileSize;
+    public String getStatus() {
+        return status;
     }
 
     @NotNull
-    public String getCallbackSlug() {
-        return callbackSlug;
+    public String getKey() {
+        return key;
     }
 
     @NotNull
-    public String getCallbackUrl() {
-        return callbackUrl;
+    public String getId() {
+        return id;
     }
 
-    @Nullable
-    public String getFileUrl() {
-        return fileUrl;
+    @NotNull
+    public String getName() {
+        return name;
     }
 }

@@ -23,7 +23,7 @@ public class ErrorResponse {
      *     "received": "undefined",
      *     "path": [
      *          "x-uploadthing-api-key"
-     *     ,
+     *     ],
      *     "message": "You must provide an API key in the 'x-uploadthing-api-key' header"
      * }
      * </pre>
@@ -36,7 +36,6 @@ public class ErrorResponse {
         this.error = error;
         this.data = data;
     }
-
 
     @NotNull
     public String getError() {

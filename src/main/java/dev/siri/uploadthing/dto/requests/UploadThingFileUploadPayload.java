@@ -1,15 +1,13 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.requests;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class UploadThingFileUploadPayload {
-    private List<UploadThingUploadRequestFile> files;
-    private String acl;
-    private String contentDisposition;
-
-    public UploadThingFileUploadPayload() {}
+    private final List<UploadThingUploadRequestFile> files;
+    private final String acl;
+    private final String contentDisposition;
 
     public UploadThingFileUploadPayload(@NotNull List<UploadThingUploadRequestFile> files, @NotNull String acl, @NotNull String contentDisposition) {
         this.files = files;

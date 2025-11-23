@@ -1,13 +1,11 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.requests;
 
 import org.jetbrains.annotations.NotNull;
 
 public class UploadThingUploadRequestFile {
-    private String name;
-    private Long size;
-    private String type;
-
-    public UploadThingUploadRequestFile() {}
+    private final String name;
+    private final Long size;
+    private final String type;
 
     public UploadThingUploadRequestFile(@NotNull String name, @NotNull Long size, @NotNull String type) {
         this.name = name;

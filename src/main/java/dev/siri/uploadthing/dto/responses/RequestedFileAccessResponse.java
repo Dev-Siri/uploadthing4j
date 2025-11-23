@@ -1,7 +1,6 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.responses;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RequestedFileAccessResponse {
     /**
@@ -10,9 +9,7 @@ public class RequestedFileAccessResponse {
      * <p><b>Example</b></p>
      * <pre>https://APP_ID.ufs.sh/f/FILE_KEY</pre>
      */
-    private String ufsUrl;
-
-    public RequestedFileAccessResponse() {}
+    private final String ufsUrl;
 
     public RequestedFileAccessResponse(@NotNull String ufsUrl) {
         this.ufsUrl = ufsUrl;

@@ -1,14 +1,12 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.requests;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FileAccessRequestBody {
-    private String fileKey;
-    private String customId;
-    private Integer expiresIn;
-
-    public FileAccessRequestBody() {}
+    private final String fileKey;
+    private final String customId;
+    private final Integer expiresIn;
 
     public FileAccessRequestBody(@NotNull String fileKey, @Nullable String customId, @NotNull Integer expiresIn) {
         this.fileKey = fileKey;

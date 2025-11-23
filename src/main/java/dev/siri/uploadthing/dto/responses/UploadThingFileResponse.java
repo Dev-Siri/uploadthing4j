@@ -1,17 +1,15 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.responses;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UploadThingFile {
-    private String id;
-    private String key;
-    private String name;
-    private String customId;
-    private String status;
+public class UploadThingFileResponse {
+    private final String id;
+    private final String key;
+    private final String name;
+    private final String customId;
+    private final String status;
 
-    public UploadThingFile() {}
-
-    public UploadThingFile(@NotNull String id, @NotNull String key, @NotNull String name, @NotNull String customId, @NotNull String status) {
+    public UploadThingFileResponse(@NotNull String id, @NotNull String key, @NotNull String name, @NotNull String customId, @NotNull String status) {
         this.id = id;
         this.key = key;
         this.name = name;

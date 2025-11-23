@@ -1,12 +1,16 @@
 package dev.siri.uploadthing;
 
 import com.google.gson.Gson;
-import dev.siri.uploadthing.models.*;
+import dev.siri.uploadthing.dto.requests.FileAccessRequestBody;
+import dev.siri.uploadthing.dto.requests.UploadThingFileUploadPayload;
+import dev.siri.uploadthing.dto.requests.UploadThingUploadRequestFile;
+import dev.siri.uploadthing.dto.responses.*;
 import dev.siri.uploadthing.models.errors.UploadThingApiError;
+import dev.siri.uploadthing.models.UploadedFile;
+import dev.siri.uploadthing.models.errors.UploadThingNoFilesUploadedError;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.RequestBuilder;
-import org.asynchttpclient.Response;
 import org.asynchttpclient.request.body.multipart.FilePart;
 import org.asynchttpclient.request.body.multipart.StringPart;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -30,31 +33,14 @@ public class UploadThing {
     @NotNull
     final private String apiKey;
 
-    /** The total number of files to be uploaded. */
-    private Integer totalFiles;
-    /** The number of files that have been uploaded. */
-    private Integer uploadedFiles;
-
-    private ArrayList<UploadedFile> uploadedFilesData = new ArrayList<>();
-
     public UploadThing(@NotNull String apiKey) {
         this.apiKey = apiKey;
     }
 
-    public Integer getUploadedFiles() {
-        return uploadedFiles;
-    }
-
-    public Integer getTotalFiles() {
-        return totalFiles;
-    }
-
-    public ArrayList<UploadedFile> getUploadedFilesData() {
-        return uploadedFilesData;
-    }
-
-    public CompletableFuture<Void> uploadFiles(List<File> files) throws UploadThingApiError, IOException {
+    /** Upload a provided list of one or many files to UploadThing. */
+    public List<UploadedFile> uploadFiles(@NotNull List<File> files) throws UploadThingApiError, UploadThingNoFilesUploadedError, IOException {
         final List<UploadThingUploadRequestFile> filesData = new ArrayList<>();
+        final ArrayList<UploadedFile> uploadedFilesData = new ArrayList<>();
 
         for (final File file : files) {
             final long fileSize = file.length();
@@ -87,9 +73,9 @@ public class UploadThing {
                 })
                 .join();
 
-        for (final PreparedUploadFile data : preparedResponse.getData()) {
+        for (final PreparedUploadFileResponse data : preparedResponse.getData()) {
             final String url = data.getUrl();
-            final Map<String, String> fields = data.getFields(); // assuming PreparedUploadFile has getFields()
+            final Map<String, String> fields = data.getFields();
 
             final RequestBuilder builder = new RequestBuilder("POST");
             builder.setUrl(url);
@@ -123,14 +109,24 @@ public class UploadThing {
                     })
                     .join();
 
-            uploadedFiles++;
             uploadedFilesData.add(new UploadedFile(data.getFileName(), data.getFileUrl(), file.length(), mimeType));
         }
 
-        return CompletableFuture.completedFuture(null);
+        return uploadedFilesData;
     }
 
-    public CompletableFuture<UploadThingServerCallbackStatus> getServerCallbackStatus(String authorization) throws UploadThingApiError {
+    /** Helper method to only upload one file to UploadThing. */
+    public UploadedFile uploadFile(@NotNull File file) throws UploadThingApiError, IOException {
+        final List<UploadedFile> uploadedFiles = uploadFiles(List.of(file));
+
+        if (uploadedFiles.isEmpty()) {
+            throw new UploadThingNoFilesUploadedError();
+        }
+
+        return uploadedFiles.getFirst();
+    }
+
+    public CompletableFuture<UploadThingServerCallbackStatusResponse> getServerCallbackStatus(String authorization) throws UploadThingApiError {
         final String requestUrl = String.format("%s/v6/serverCallback", UPLOADTHING_API_URL);
 
         return httpClient.prepare("GET", requestUrl)
@@ -147,7 +143,7 @@ public class UploadThing {
                         throw new UploadThingApiError(error);
                     }
 
-                    return gson.fromJson(body, UploadThingServerCallbackStatus.class);
+                    return gson.fromJson(body, UploadThingServerCallbackStatusResponse.class);
                 });
     }
 
@@ -192,7 +188,7 @@ public class UploadThing {
                 });
     }
 
-    public CompletableFuture<AppInfo> getAppInfo() throws UploadThingApiError {
+    public CompletableFuture<AppInfoResponse> getAppInfo() throws UploadThingApiError {
         final String requestUrl = String.format("%s/v7/getAppInfo", UPLOADTHING_API_URL);
 
         return httpClient.prepare("POST", requestUrl)
@@ -208,11 +204,11 @@ public class UploadThing {
                         throw new UploadThingApiError(error);
                     }
 
-                    return gson.fromJson(body, AppInfo.class);
+                    return gson.fromJson(body, AppInfoResponse.class);
                 });
     }
 
-    public CompletableFuture<UsageInfo> getUsageInfo() throws UploadThingApiError {
+    public CompletableFuture<UsageInfoResponse> getUsageInfo() throws UploadThingApiError {
         final String requestUrl = String.format("%s/v7/getUsageInfo", UPLOADTHING_API_URL);
 
         return httpClient.prepare("POST", requestUrl)
@@ -228,7 +224,7 @@ public class UploadThing {
                         throw new UploadThingApiError(error);
                     }
 
-                    return gson.fromJson(body, UsageInfo.class);
+                    return gson.fromJson(body, UsageInfoResponse.class);
                 });
     }
 }

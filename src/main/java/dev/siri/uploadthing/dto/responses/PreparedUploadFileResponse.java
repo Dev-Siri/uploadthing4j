@@ -1,27 +1,30 @@
-package dev.siri.uploadthing.models;
+package dev.siri.uploadthing.dto.responses;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class PreparedUploadFile {
-    private String key;
-    private String fileName;
-    private String fileType;
-    private String fileUrl;
-    private ContentDisposition contentDisposition;
-    private String pollingJwt;
-    private String pollingUrl;
-    private String customId;
-    private String url;
-    private Map<String, String> fields;
+public class PreparedUploadFileResponse {
+    private final String key;
+    private final String fileName;
+    private final String fileType;
+    private final String fileUrl;
+    private final ContentDisposition contentDisposition;
+    private final String pollingJwt;
+    private final String pollingUrl;
+    private final String customId;
+    private final String url;
+    private final Map<String, String> fields;
 
-    public PreparedUploadFile() {}
+    public enum ContentDisposition {
+        inline,
+        attachment,
+    }
 
-    public PreparedUploadFile(@NotNull String key, @NotNull String fileName, @Nullable String fileType, @NotNull String fileUrl, @NotNull String contentDisposition,
-                              @NotNull String pollingJwt, @NotNull String pollingUrl, @Nullable String customId, @NotNull String url,
-                              @NotNull Map<String, String> fields) {
+    public PreparedUploadFileResponse(@NotNull String key, @NotNull String fileName, @Nullable String fileType, @NotNull String fileUrl, @NotNull String contentDisposition,
+                                      @NotNull String pollingJwt, @NotNull String pollingUrl, @Nullable String customId, @NotNull String url,
+                                      @NotNull Map<String, String> fields) {
         if (contentDisposition.equals("inline")) {
             this.contentDisposition = ContentDisposition.inline;
         } else if (contentDisposition.equals("attachment")) {

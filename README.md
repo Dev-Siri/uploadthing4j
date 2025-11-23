@@ -9,7 +9,56 @@
 
 ### Using The Library
 
-TODO
+Use jitpack to add the library from GitHub.
+
+#### Maven
+
+Add this to your `pom.xml`
+
+```xml
+<repositories>
+	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
+
+Then add this library as a dependency.
+
+```xml
+<dependency>
+    <groupId>com.github.Dev-Siri</groupId>
+    <artifactId>uploadthing4j</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+#### Gradle
+
+Add this in your root `settings.gradle` at the end of repositories:
+
+```groovy
+dependencyResolutionManagement {
+	repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+	repositories {
+		mavenCentral()
+        // For settings.gradle.kts, use this instead:
+        // maven { url = uri("https://jitpack.io") }
+        maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+Then add the library as a dependency:
+
+```groovy
+dependencies {
+    // For settings.gradle.kts, use this instead:
+    // implementation("com.github.Dev-Siri:uploadthing4j:1.0.0")
+    implementation 'com.github.Dev-Siri:uploadthing4j:1.0.0'
+}
+```
 
 ### Developing Locally
 
@@ -18,6 +67,8 @@ Clone the repository.
 ```sh
 $ git clone https://github.com/Dev-Siri/uploadthing4j
 ```
+
+Then get going with your IDE.
 
 ## License
 

@@ -5,6 +5,8 @@
 <h1 align="center">uploadthing4j</h1>
 <h3 align="center">An unofficial Java SDK to interact with the <a href="https://uploadthing.com">UploadThing</a> API.</h3>
 
+[![](https://jitpack.io/v/Dev-Siri/uploadthing4j.svg)](https://jitpack.io/#Dev-Siri/uploadthing4j)
+
 ## Getting Started
 
 ### Using The Library

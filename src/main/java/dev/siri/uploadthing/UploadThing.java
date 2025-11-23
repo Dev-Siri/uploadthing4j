@@ -35,6 +35,10 @@ public class UploadThing {
         this.apiKey = apiKey;
     }
 
+    public static String getFileUrl(@NotNull String fileKey) {
+        return "https://utfs.io/f/" + fileKey;
+    }
+
     /** Upload a provided list of one or many files to UploadThing. */
     public List<UploadedFile> uploadFiles(@NotNull List<File> files) throws UploadThingApiError, UploadThingNoFilesUploadedError, IOException {
         final List<UploadThingUploadRequestFile> filesData = new ArrayList<>();

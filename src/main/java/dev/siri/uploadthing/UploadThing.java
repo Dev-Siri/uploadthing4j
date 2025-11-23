@@ -1,9 +1,7 @@
 package dev.siri.uploadthing;
 
 import com.google.gson.Gson;
-import dev.siri.uploadthing.dto.requests.FileAccessRequestBody;
-import dev.siri.uploadthing.dto.requests.UploadThingFileUploadPayload;
-import dev.siri.uploadthing.dto.requests.UploadThingUploadRequestFile;
+import dev.siri.uploadthing.dto.requests.*;
 import dev.siri.uploadthing.dto.responses.*;
 import dev.siri.uploadthing.models.errors.UploadThingApiError;
 import dev.siri.uploadthing.models.UploadedFile;
@@ -124,6 +122,129 @@ public class UploadThing {
         }
 
         return uploadedFiles.getFirst();
+    }
+
+    /**
+     * List all the files uploaded to UploadThing.
+     * @param limit The number of files to list. Defaults to 500.
+     * @param offset Number files to skip from the beginning. Defaults to 0.
+     */
+    public CompletableFuture<UploadThingListFilesResponse> listFiles(int limit, int offset) throws UploadThingApiError {
+        final String requestUrl = String.format("%s/v6/listFiles", UPLOADTHING_API_URL);
+        final UploadThingListFilesParameters listFilesParameters = new UploadThingListFilesParameters(limit, offset);
+
+        return httpClient.prepare("POST", requestUrl)
+                .setHeader(UPLOADTHING_API_HEADER_KEY, apiKey)
+                .setBody(gson.toJson(listFilesParameters))
+                .execute()
+                .toCompletableFuture()
+                .thenApply(response -> {
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
+                    return gson.fromJson(body, UploadThingListFilesResponse.class);
+                });
+    }
+
+    public CompletableFuture<UploadThingListFilesResponse> listFiles(int limit) throws UploadThingApiError {
+        return listFiles(limit, 0);
+    }
+
+    public CompletableFuture<UploadThingListFilesResponse> listFiles() throws UploadThingApiError {
+        return listFiles(500, 0);
+    }
+
+    /**
+     * Rename a Map of provided files tied to their fileKeys.
+     *
+     * <p><b>Example</b></p>
+     * <pre>{@code
+     *   final List<Map<String, String>> updates = List.of(
+     *      Map.of(
+     *           "fileKey", "FILE_KEY",
+     *           "newName", "foo.png",
+     *      ),
+     *      Map.of(
+     *          "fileKey": "FILE_KEY",
+     *          "newName": "bar.jpg"
+     *      )
+     *   );
+     *
+     *   uploadThing.renameFiles(updates);
+     * }</pre>
+     */
+    public CompletableFuture<Void> renameFiles(List<Map<String, String>> updates) throws UploadThingApiError {
+        final String requestUrl = String.format("%s/v6/renameFiles", UPLOADTHING_API_URL);
+        final UploadThingRenameFilesRequestBody requestBody = new UploadThingRenameFilesRequestBody(updates);
+
+        return httpClient.prepare("POST", requestUrl)
+                .setHeader(UPLOADTHING_API_HEADER_KEY, apiKey)
+                .setHeader("Content-Type", "application/json")
+                .setBody(gson.toJson(requestBody))
+                .execute()
+                .toCompletableFuture()
+                .thenApply(response -> {
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
+                    return null;
+                });
+    }
+
+    /**
+     * Helper method to rename a single file.
+     *
+     * <p><b>Example</b></p>
+     * <pre>{@code
+     *   uploadThing.renameFile("FILE_KEY", "foo.png");
+     * }</pre>
+     */
+    public CompletableFuture<Void> renameFile(@NotNull String fileKey, @NotNull String newName) throws UploadThingApiError {
+        final List<Map<String, String>> renameParameters = List.of(Map.of(
+                "fileKey", fileKey,
+                "newName", newName
+        ));
+
+        return renameFiles(renameParameters);
+    }
+
+     /** Delete a list of files tied to their fileKeys from UploadThing. */
+    public CompletableFuture<Void> deleteFiles(List<String> fileKeys) throws UploadThingApiError {
+        final String requestUrl = String.format("%s/v6/deleteFiles", UPLOADTHING_API_URL);
+        final UploadThingDeleteFilesRequestBody requestBody = new UploadThingDeleteFilesRequestBody(fileKeys);
+
+        return httpClient.prepare("POST", requestUrl)
+                .setHeader(UPLOADTHING_API_HEADER_KEY, apiKey)
+                .setHeader("Content-Type", "application/json")
+                .setBody(gson.toJson(requestBody))
+                .execute()
+                .toCompletableFuture()
+                .thenApply(response -> {
+                    final String body = response.getResponseBody();
+                    final int statusCode = response.getStatusCode();
+
+                    if (statusCode != 200) {
+                        final ErrorResponse error = gson.fromJson(body, ErrorResponse.class);
+                        throw new UploadThingApiError(error);
+                    }
+
+                    return null;
+                });
+    }
+
+    /** Helper method to delete a singular file tied to its fileKey from UploadThing. */
+    public CompletableFuture<Void> deleteFile(String fileKey) throws UploadThingApiError {
+        return deleteFiles(List.of(fileKey));
     }
 
     public CompletableFuture<UploadThingServerCallbackStatusResponse> getServerCallbackStatus(String authorization) throws UploadThingApiError {

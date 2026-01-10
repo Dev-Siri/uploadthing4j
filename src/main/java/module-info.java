@@ -10,6 +10,7 @@ module uploadthing4j {
     requires org.jetbrains.annotations;
     requires io.netty.buffer;
     requires org.slf4j;
+    requires java.net.http;
 
     opens dev.siri.uploadthing.dto.responses to com.google.gson;
     opens dev.siri.uploadthing.dto.requests to com.google.gson;
